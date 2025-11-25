@@ -1,5 +1,8 @@
 use anchor_lang::prelude::*;
-use anchor_spl::{associated_token::AssociatedToken, token_interface::TokenInterface};
+use anchor_spl::{
+    associated_token::AssociatedToken,
+    token_interface::{Mint, TokenAccount, TokenInterface},
+};
 
 use crate::state::EscrowState;
 use crate::Errors;
@@ -12,6 +15,7 @@ pub struct Refund<'info> {
     #[account(mut)]
     pub maker: Signer<'info>,
 
+    /// CHECK: Metaplex Core Asset.
     #[account(mut, address = escrow.nft_mint)] 
     pub asset: UncheckedAccount<'info>,
     
@@ -28,18 +32,9 @@ pub struct Refund<'info> {
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub token_program: Interface<'info, TokenInterface>,
     pub system_program: Program<'info, System>,
+    /// CHECK: El ID del programa Metaplex Core se verifica fuera de este struct y se requiere para la CPI.
     pub mpl_core_program: AccountInfo<'info>,
 
-    // 5. Cuenta ATA del Maker que recibirá el NFT
-   
-    #[account(
-        init_if_needed,
-        payer = maker,
-        associated_token::mint = asset.key(),
-        associated_token::authority = maker,
-        associated_token::token_program = token_program
-    )]
-    pub maker_asset_ata: Box<InterfaceAccount<'info, TokenAccount>>,
 }
 
 impl<'info> Refund<'info> {

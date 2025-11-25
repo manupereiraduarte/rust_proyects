@@ -13,9 +13,11 @@ pub struct Initialize<'info> {
     pub maker: Signer<'info>,
 
     #[account(mut)]
-    pub mint_sol: Box<InterfaceAccount<'info, Mint>>, 
-    #[account(mut)]
+    pub mint_sol: Box<InterfaceAccount<'info, Mint>>,
 
+    /// CHECK: Esta cuenta es el Mint del NFT (Asset) y su validación
+    /// se realiza manualmente con BaseAssetV1::try_from en la instrucción.
+    #[account(mut)]
     pub asset: UncheckedAccount<'info>,
     
     // 1. Inicialización de la cuenta de estado (PDA)

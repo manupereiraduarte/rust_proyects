@@ -15,6 +15,7 @@ pub struct Take<'info> {
     #[account(mut)]
     pub taker: Signer<'info>, 
     
+    /// CHECK: El Mint del NFT (Asset) se usa para inicializar la ATA de destino.
     #[account(mut, address = escrow.maker)]
     pub maker: SystemAccount<'info>, 
 
@@ -23,6 +24,7 @@ pub struct Take<'info> {
     pub mint_sol: Box<InterfaceAccount<'info, Mint>>,
     
     // 4. El NFT/Asset
+    /// CHECK: El NFT de Metaplex Core se transfiere cambiando su dueño interno.
     #[account(mut, address = escrow.nft_mint)]
     pub asset: UncheckedAccount<'info>,
     
@@ -64,20 +66,11 @@ pub struct Take<'info> {
     )]
     pub taker_ata_sol: Box<InterfaceAccount<'info, TokenAccount>>,
 
-    // 9. Cuenta del Comprador (ATA que recibe el NFT/Asset)
-    #[account(
-        init_if_needed,
-        payer = taker,
-        associated_token::mint = asset.key(),
-        associated_token::authority = taker,
-        associated_token::token_program = token_program
-    )]
-    pub taker_asset_ata: Box<InterfaceAccount<'info, TokenAccount>>,
-
     // 10. Cuentas de Programas
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub token_program: Interface<'info, TokenInterface>,
     pub system_program: Program<'info, System>,
+    /// CHECK: El ID del programa Metaplex Core se verifica fuera de este struct y se requiere para la CPI.
     pub mpl_core_program: AccountInfo<'info>,
 }
 

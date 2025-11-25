@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{
     associated_token::AssociatedToken,
-    token_interface::{Mint, TokenAccount, TokenInterface, TransferChecked},
+    token_interface::{TokenAccount, TokenInterface},
 };
 
 use crate::state::EscrowState;
@@ -16,7 +16,8 @@ pub struct Make<'info> {
     #[account(mut)]
     pub maker: Signer<'info>, 
 
-    // 2. El NFT/Asset (Metaplex Core Asset)
+    /// CHECK: Esta cuenta es el Mint del NFT (Asset) y su validación
+    /// se realiza manualmente con BaseAssetV1::try_from en la instrucción.
     #[account(mut)]
     pub asset: UncheckedAccount<'info>,
     
